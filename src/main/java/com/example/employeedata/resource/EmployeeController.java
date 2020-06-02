@@ -4,7 +4,12 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,24 +18,25 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-
+import com.example.employeedata.EmployeeDataApplication;
 import com.example.employeedata.model.EmployeeData;
 import com.example.employeedata.repository.EmployeeRepository;
 import lombok.*;
 @RestController
 
+	 
 public class EmployeeController {
 	
 	@Autowired
 	private EmployeeRepository repository;
 	
+//	Logger logger = LogManager.getLogger(EmployeeDataApplication.class);
+	
+	
 	@PostMapping("/addEmployee")
 	
 	public String saveEmployee(@RequestBody EmployeeData employeedata) {
 		repository.save(employeedata);
-//		repository.save(new EmployeeData(id,EmpName,CompName));
-
-//		System.out.println(employeedata.getEmpName());
 		return "Added Employee with ID: "+employeedata.getId();
 		
 	}
@@ -61,11 +67,6 @@ public class EmployeeController {
 	
 	@PutMapping("/update/{empName}")
     public EmployeeData updateDept(@RequestBody EmployeeData employeedata, @PathVariable String empName) {
-//		@PathVariable String empName, @PathVariable String compName
-//		ed.setId(id);
-//		ed.setCompName(compName);
-//		ed.setEmpName(empName);
-		
 		EmployeeData ed = repository.findByEmpName(empName);
 		ed.setId(employeedata.getId());
 		ed.setCompName(employeedata.getCompName());
@@ -73,5 +74,14 @@ public class EmployeeController {
 		repository.save(ed);
         return ed;
     }
+	
+	@GetMapping("/PaginationSort")
+	public Page<EmployeeData> fetchPage(Pageable pageable) {
+		return repository.findAll(pageable);
+	}
+	
+	
+	
+	
 	
 }

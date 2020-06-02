@@ -17,6 +17,7 @@ public class EmployeeData {
 	private String empName;
 	private String compName;
 	
+	EmployeeData(){}  //added for getting error"JSON parse error: Cannot construct instance of in spring boot" For deserialisation purposes, must have a zero-arg constructor.
 	EmployeeData(Integer id){
 		this.id = id;
 	}
